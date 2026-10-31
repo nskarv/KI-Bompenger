@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Statens vegvesen ruteplanlegger
+  version: "1.0"
+  description: Åpen ruteplanlegger fra Statens vegvesen uten nøkkel. Gir avstand, kjøretid og bomstasjoner mellom to punkter i EPSG:25833. Data under NLOD 2.0, oppgi Statens vegvesen som kilde. Oppført grense på 2 500 forespørsler per dag.
+servers:
+  - url: https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api
+paths:
+  /Matrix:
+    get:
+      operationId: avstandOgBomsum
+      summary: Avstand, kjøretid og Vegvesens bomsum mellom to punkter (lite svar)
+      description: Kall denne først. Svaret er under 500 byte. Les results[0].distanceMeters (del på 1000), results[0].durationSeconds (del på 60) og results[0].statistics.tollCount og tollSmall (kroner liten bil, som tekst). tollSmall er Vegvesens egen sum og kan avvike fra stasjonene i bomstasjonerPaaRuten.
+      parameters:
+        - name: Stops
+          in: query
+          required: true
+          schema: { type: string }
+          description: "Fra og til som øst,nord;øst,nord i EPSG:25833, for eksempel 227433.45,6671118.76;249716.17,6647823.44"
+        - name: Format
+          in: query
+          required: true
+          schema: { type: string, default: json }
+      responses:
+        "200":
+          description: Avstandsmatrise
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        distanceMeters: { type: number }
+                        durationSeconds: { type: number }
+                        statistics:
+                          type: object
+                          properties:
+                            tollCount: { type: string }
+                            tollSmall: { type: string }
+                            tollSmallNoDiscount: { type: string }
+                            ferryCount: { type: string }
+  /Route/best:
+    get:
+      operationId: bomstasjonerPaaRuten
+      summary: Hele ruten med bomstasjonene med navn og pris (stort svar)
+      description: Kall denne etter avstandOgBomsum, bare for å få navnene på bomstasjonene. Svaret er stort (40 til 150 kB) og kan bli avkortet. Les alle bomstasjoner under routes[0].features[].properties.roadFeatures.bomstasjoner, med navn og takstLitenBil (kroner som tekst). Summer dem selv. Blir svaret avkortet, bruk tallene fra avstandOgBomsum og si at stasjonsnavnene ikke var tilgjengelige. Feil 404 med code 9200 til 9209 betyr at et punkt ligger utenfor vegnettet, oftest fordi rekkefølgen øst,nord er byttet om.
+      parameters:
+        - name: Stops
+          in: query
+          required: true
+          schema: { type: string }
+          description: "Samme som i avstandOgBomsum: øst,nord;øst,nord"
+        - name: Format
+          in: query
+          required: true
+          schema: { type: string, default: json }
+      responses:
+        "200":
+          description: Ruten med delstrekninger
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        statistic:
+                          type: object
+                          properties:
+                            totalLength: { type: number }
+                            totalDriveTime: { type: number }
+                            tollCount: { type: string }
+                            tollSmall: { type: string }
+                        features:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              properties:
+                                type: object
+                                properties:
+                                  roadFeatures:
+                                    type: object
+                                    properties:
+                                      bomstasjoner:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            navn: { type: string }
+                                            takstLitenBil: { type: string }
+                                            takstStorBil: { type: string }

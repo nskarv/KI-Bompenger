@@ -13,7 +13,8 @@ Bruk den første som er tilgjengelig:
 
 1. **MCP-verktøyet `finn_bompenger`** er koblet til: kall det med `fra` og `til`, og gå til «Svarformat».
 2. **Du kan kjøre kommandoer** og har filen `bompenger.py`: kjør `python bompenger.py "<fra>" "<til>"`, og gå til «Svarformat». Filen ligger på https://github.com/nskarv/KI-Bompenger.
-3. **Du kan hente nettsider (web fetch):** følg stegene under. Begge tjenestene er åpne og trenger ingen nøkkel.
+3. **Du har Actions** `finnStedsnavn`, `finnAdresse`, `avstandOgBomsum` og `bomstasjonerPaaRuten` (en egendefinert GPT i ChatGPT): bruk dem i den rekkefølgen stegene under beskriver. Parameterne er de samme som i nettadressene.
+4. **Du kan hente nettsider (web fetch):** følg stegene under. Begge tjenestene er åpne og trenger ingen nøkkel. Merk: ChatGPTs nettleserverktøy nekter å åpne nettadresser du selv har satt sammen. Der må du bruke Actions (punkt 3), eller gi brukeren nettadressene og be om svarene limt inn.
 
 ## Bruk de vanlige adressene først
 

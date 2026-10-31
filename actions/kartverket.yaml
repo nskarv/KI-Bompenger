@@ -1,0 +1,111 @@
+openapi: 3.1.0
+info:
+  title: Kartverket steds- og adressesøk
+  version: "1.0"
+  description: Åpne tjenester fra Kartverket uten nøkkel. Gir koordinater i EPSG:25833 (UTM 33) for stedsnavn og gateadresser. Data under CC BY 4.0, oppgi Kartverket som kilde.
+servers:
+  - url: https://api.kartverket.no
+paths:
+  /stedsnavn/v1/navn:
+    get:
+      operationId: finnStedsnavn
+      summary: Finn et stedsnavn (by, tettsted, kirke, gate) og koordinatene til det
+      description: Bruk for tekst uten tall, for eksempel «Tyristrand kirke» eller «Sandvika». Mange steder deler navn, og listen er ikke sortert etter relevans. Velg treff etter navneobjekttype i rekkefølgen By, Tettsted, Tettbebyggelse, Bygd, Grend, Kirke, Stasjon, og vis alltid navn, type og kommune for det valgte stedet. Koordinatene står i representasjonspunkt.øst og representasjonspunkt.nord.
+      parameters:
+        - name: sok
+          in: query
+          required: true
+          schema: { type: string }
+          description: Stedsnavnet, for eksempel «Tyristrand kirke»
+        - name: utkoordsys
+          in: query
+          required: true
+          schema: { type: integer, default: 25833 }
+          description: Alltid 25833, slik at koordinatene passer Statens vegvesens ruteplanlegger
+        - name: treffPerSide
+          in: query
+          required: false
+          schema: { type: integer, default: 10 }
+        - name: kommunenavn
+          in: query
+          required: false
+          schema: { type: string }
+          description: Begrens til én kommune, for eksempel «Asker», når du slår opp et gatenavn
+        - name: filtrer
+          in: query
+          required: false
+          schema: { type: string, default: "navn.skrivemåte,navn.navneobjekttype,navn.kommuner.kommunenavn,navn.representasjonspunkt" }
+          description: Gjør svaret lite. Bruk standardverdien.
+      responses:
+        "200":
+          description: Treffliste
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    properties:
+                      totaltAntallTreff: { type: integer }
+                  navn:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        skrivemåte: { type: string }
+                        navneobjekttype: { type: string }
+                        kommuner:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              kommunenavn: { type: string }
+                        representasjonspunkt:
+                          type: object
+                          properties:
+                            øst: { type: number }
+                            nord: { type: number }
+                            koordsys: { type: integer }
+  /adresser/v1/sok:
+    get:
+      operationId: finnAdresse
+      summary: Finn en gateadresse med husnummer og koordinatene til den
+      description: Bruk for tekst med tall, for eksempel «Nesbruveien 40, 1396 Billingstad». Første treff brukes. Koordinatene står i representasjonspunkt, der øst ligger i feltet «lon» og nord i feltet «lat» når utkoordsys er 25833. Tjenesten avviser ukjente parametere, så send bare de som står her.
+      parameters:
+        - name: sok
+          in: query
+          required: true
+          schema: { type: string }
+          description: Gateadresse med husnummer og helst postnummer
+        - name: utkoordsys
+          in: query
+          required: true
+          schema: { type: integer, default: 25833 }
+        - name: treffPerSide
+          in: query
+          required: false
+          schema: { type: integer, default: 1 }
+      responses:
+        "200":
+          description: Treffliste
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adresser:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        adressetekst: { type: string }
+                        postnummer: { type: string }
+                        poststed: { type: string }
+                        kommunenavn: { type: string }
+                        representasjonspunkt:
+                          type: object
+                          properties:
+                            epsg: { type: string }
+                            lon: { type: number, description: "Øst i meter (EPSG:25833)" }
+                            lat: { type: number, description: "Nord i meter (EPSG:25833)" }

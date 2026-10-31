@@ -91,6 +91,18 @@ hvordan stedsnavn velges og hvordan svaret skal se ut. Claude kan hente nettside
 
 Finnes MCP-verktøyet eller `bompenger.py` fra før, sier skillen at de skal brukes først.
 
+## ChatGPT: egendefinert GPT med Actions
+
+ChatGPTs nettleserverktøy åpner lenker du gir den, men nekter å åpne nettadresser modellen selv har satt sammen med nye verdier. Det er et sikkerhetstiltak mot lekkasje gjennom lenker, og det stopper skillen i vanlig ChatGPT-chat. Løsningen i ChatGPT er en egendefinert GPT med Actions, som kaller tjenestene direkte:
+
+1. Åpne ChatGPT → Utforsk GPT-er → Opprett (krever Plus, Team eller Enterprise).
+2. Lim inn innholdet i `SYSTEMPROMPT.md` som instruksjoner.
+3. Under Actions, velg «Opprett ny action», lim inn innholdet i `actions/kartverket.yaml`, autentisering «None».
+4. Opprett en action til med `actions/vegvesen.yaml`, autentisering «None».
+5. Lagre, og spør: «Hva koster bompengene fra Tyristrand kirke til Sandvika?»
+
+Actions-filene beskriver fire kall: `finnStedsnavn` og `finnAdresse` hos Kartverket, `avstandOgBomsum` (lite svar) og `bomstasjonerPaaRuten` (stort svar) hos Vegvesen. GPT-en bygger parameterne selv, så ingen nettadresser settes sammen i chatten.
+
 ## Systemprompt for en agent
 
 `SYSTEMPROMPT.md` er en ferdig systemprompt for en agent som bare gjør dette: hva den gjør ved start, en arbeidsflyt
