@@ -89,10 +89,15 @@ Finnes MCP-verktøyet eller `bompenger.py` fra før, sier skillen at de skal bru
 
 ## Systemprompt for en agent
 
-`SYSTEMPROMPT.md` er en ferdig systemprompt for en agent som bare gjør dette: hva den sier ved start, en arbeidsflyt
-i fem steg (samle inn, slå opp, kontroller stedene, svar, tilby neste steg), reglene og et eksempel. Lim den inn som
-systemprompt i AnythingLLM, som instruksjoner i et Claude-prosjekt eller en egendefinert GPT, eller i en Ollama-modell,
-og gi agenten verktøyet `finn_bompenger` eller skillen.
+`SYSTEMPROMPT.md` er en ferdig systemprompt for en agent som bare gjør dette: hva den gjør ved start, en arbeidsflyt
+i fem steg (samle inn, slå opp, kontroller stedene, svar, tilby neste steg), reglene og et eksempel. Filen er bare
+prompten, uten forklaring, så den kan limes rett inn.
+
+- **Som systemprompt:** i AnythingLLM, som instruksjoner i et Claude-prosjekt eller en egendefinert GPT, eller i en
+  Ollama-modell. Gi agenten verktøyet `finn_bompenger` eller skillen.
+- **Som første melding i en samtale:** lim inn hele teksten. Prompten sier at modellen skal bli agenten med en gang,
+  ikke vurdere teksten. Har den ingen verktøy, åpner den SKILL.md fra dette repoet selv, hvis den kan åpne nettadresser.
+  Kan den ikke det, ber den om å få SKILL.md limt inn og venter.
 
 ## Når noe går galt
 
