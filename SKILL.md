@@ -41,8 +41,10 @@ Les `adresser[0]`. Koordinatene står i `representasjonspunkt`: **øst i feltet 
 **Tekst uten tall** (stedsnavn, for eksempel «Tyristrand kirke» eller «Sandvika») søkes som stedsnavn:
 
 ```
-https://ws.geonorge.no/stedsnavn/v1/navn?sok=<tekst>&utkoordsys=25833&treffPerSide=10
+https://ws.geonorge.no/stedsnavn/v1/navn?sok=<tekst>&utkoordsys=25833&treffPerSide=10&filtrer=navn.skrivem%C3%A5te,navn.navneobjekttype,navn.kommuner.kommunenavn,navn.representasjonspunkt
 ```
+
+`filtrer` gjør svaret lite: bare navn, type, kommune og koordinater. Uten den er svaret dobbelt så stort.
 
 Les listen `navn`. Kartverket sorterer ikke etter hva folk mener: «Sandvika» gir 622 treff, og en elv står før byen i Bærum. Velg derfor treffet etter `navneobjekttype` i denne rekkefølgen: By, Tettsted, Tettbebyggelse, Bygd, Grend, Kirke, Stasjon. Finnes ingen av dem, ta det første treffet. Koordinatene står i `representasjonspunkt.øst` og `representasjonspunkt.nord`. Stedet skrives som `skrivemåte (navneobjekttype, kommunenavn)`, for eksempel «Sandvika (by, Bærum)».
 
@@ -59,32 +61,38 @@ Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: 
 
 ## Steg 2: finn ruten hos Statens vegvesen
 
+Gjør to oppslag. Det første er lite og gir nesten alt. Det andre er stort og gir bare navnene på bomstasjonene.
+
+**Oppslag A, avstand, tid og Vegvesens bomsum (438 byte):**
+
 ```
-https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>,<nord1>;<øst2>,<nord2>&Format=json
+https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Matrix?Stops=<øst1>,<nord1>;<øst2>,<nord2>&Format=json
 ```
 
 Rekkefølgen er øst,nord for fra-stedet, semikolon, øst,nord for til-stedet. Eksempel for Tyristrand kirke til Sandvika:
 
 ```
-...Route/best?Stops=227433.45,6671118.76;249716.17,6647823.44&Format=json
+...api/Matrix?Stops=227433.45,6671118.76;249716.17,6647823.44&Format=json
 ```
 
+Les `results[0]`: `distanceMeters` (del på 1000, én desimal), `durationSeconds` (del på 60, rund av), og i `statistics`: `tollCount` (antall passeringer) og `tollSmall` (kroner, liten bil, som tekst). Dette er Vegvesens egen sum. Den kan avvike fra stasjonene i oppslag B; si hvilken du bruker.
+
+**Oppslag B, bomstasjonene med navn (40 til 150 kB):**
+
+```
+https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>,<nord1>;<øst2>,<nord2>&Format=json
+```
+
+Svaret er stort, med geometri og kjørebeskrivelser som ikke kan velges bort. Du trenger bare alle `bomstasjoner` under `features[].properties.roadFeatures` i `routes[0]`. De ligger spredt på flere delstrekninger. For hver stasjon: `navn` og `takstLitenBil` (kroner, ofte som tekst, for eksempel "51"). Summer dem selv. Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ.
+
+Får du ikke åpnet oppslag B, eller er svaret avkortet (JSON-en slutter brått), svar med tallene fra oppslag A og si at stasjonsnavnene ikke var tilgjengelige. Det er et fullgodt svar. Gjett aldri stasjoner.
+
 Bare komma mellom øst og nord, og bare semikolon mellom de to punktene, gir en gyldig adresse. Mellomrom, `|` eller to `Stops`-parametere gir feil 400. Avviser henteverktøyet ditt adressen på grunn av semikolonet, skriv `%3B` i stedet for `;` og `%2C` i stedet for `,`. Vegvesen godtar begge former.
-
-Svaret er stort. Du trenger bare dette fra `routes[0]`:
-
-- `statistic.totalLength`: meter. Del på 1000 og rund av til én desimal for kilometer.
-- `statistic.totalDriveTime`: minutter, rund av til helt tall.
-- Alle `bomstasjoner` under `features[].properties.roadFeatures`. De ligger spredt på flere delstrekninger. For hver stasjon: `navn` og `takstLitenBil` (pris i kroner, ofte som tekst, for eksempel "51").
-
-Ikke bruk `statistic.tollCount` eller `statistic.tollSmall`. De stemmer ikke med stasjonene på ruten. Summer stasjonene du fant selv.
-
-Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ med km og minutter.
 
 Får du en feil fra Vegvesen, les meldingen i svaret. Den er JSON med `code` og `message`:
 
 - `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst,nord (ikke nord,øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med semikolon mellom. Rett opp og hent på nytt. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
-- Henteverktøyet ditt melder «klientfeil» eller lignende uten noen JSON-melding, selv om adressen er riktig bygget: da er det verktøyet som ikke får hentet siden, ikke Vegvesen som avviser ruten. Enkelte henteverktøy spør tjenesten med HEAD før GET, og Vegvesens ruteplanlegger svarer 405 på HEAD. Ikke prøv flere ganger, og ikke bruk andre tjenester. Gi brukeren hele adressen du bygde, be dem åpne den i nettleseren sin og lime inn svaret, og les det innlimte svaret som i steg 2. Nettleseren viser JSON-en direkte.
+- Henteverktøyet ditt melder «klientfeil» eller lignende uten noen JSON-melding, selv om adressen er riktig bygget: da er det verktøyet som ikke får hentet siden, ikke Vegvesen som avviser ruten. Enkelte henteverktøy spør tjenesten med HEAD før GET, og Vegvesens ruteplanlegger svarer 405 på HEAD. Ikke prøv flere ganger, og ikke bruk andre tjenester. Gi brukeren hele adressen til oppslag A, be dem åpne den i nettleseren sin og lime inn svaret (det er kort), og les det innlimte svaret som over. Nettleseren viser JSON-en direkte.
 - Ikke noe svar i det hele tatt: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
 
 Når et oppslag feiler, si alltid til brukeren hvilken nettadresse du åpnet og hva svaret var. Da kan feilen rettes.
@@ -94,7 +102,7 @@ Når et oppslag feiler, si alltid til brukeren hvilken nettadresse du åpnet og 
 Kort og konkret, på norsk, slik:
 
 > Fra **Tyristrand kirke (kirke, Ringerike)** til **Sandvika (by, Bærum)**: 53,5 km, rundt 50 minutter én vei.
-> Bomstasjoner: E16 Skaret 51 kr, E16 Avtjerna 51 kr. Til sammen 102 kr i fullpris for liten bil.
+> Bomstasjoner: E16 Skaret 51 kr, E16 Avtjerna 51 kr. Til sammen 102 kr i fullpris for liten bil. Vegvesens egen sum for ruten er 204 kr for 3 passeringer, så regn med 102 til 204 kr.
 > AutoPASS gir vanligvis 20 % rabatt, og noen stasjoner tar bare betalt i én retning. Tur-retur er tallene det dobbelte, med forbehold om énveis innkreving.
 
 Regler:
@@ -106,6 +114,6 @@ Regler:
 
 ## Begrensninger
 
-- Vegvesens åpne tjeneste er oppført med en grense på 2 500 forespørsler per dag. Ikke slå opp i løkke.
+- Vegvesens åpne tjeneste er oppført med en grense på 2 500 forespørsler per dag. Ikke slå opp i løkke. To oppslag per rute holder.
 - Takstene er anslag for planlegging, ikke en faktura.
 - Stedsnavnsøket kjenner ikke butikker og bedrifter («IKEA», «Sandvika Storsenter»). Be om gateadresse i slike tilfeller.
