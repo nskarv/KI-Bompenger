@@ -86,6 +86,10 @@ def _oppsummer(rute: dict) -> dict:
         "minutter": round(float(stat["totalDriveTime"])),
         "bomstasjoner": stasjoner,
         "bom_sum_liten_bil_kr": round(sum(s["liten_bil_kr"] for s in stasjoner), 2),
+        # Vegvesens egen sum. Den teller ofte én passering mer enn stasjonene over, trolig en stasjon
+        # i en bomring som ikke listes per strekning. Vis begge tall; den sanne prisen ligger mellom dem.
+        "vegvesen_sum": {"passeringer": int(float(stat.get("tollCount") or 0)),
+                         "liten_bil_kr": float(stat.get("tollSmall") or 0)},
     }
 
 
@@ -116,7 +120,8 @@ def finn_bompenger(fra: str, til: str) -> dict:
         "til": til_adresse,
         "en_vei": beste,
         "bomfritt_alternativ": bomfritt if beste["bomstasjoner"] else None,
-        "merknad": "Fullpris liten bil. AutoPASS gir vanligvis 20 % rabatt. Noen stasjoner tar bare betalt i én retning.",
+        "merknad": "Fullpris liten bil. AutoPASS gir vanligvis 20 % rabatt. Noen stasjoner tar bare betalt i én retning. "
+                   "Avviker vegvesen_sum fra stasjonene, ligger prisen trolig mellom de to.",
     }
 
 

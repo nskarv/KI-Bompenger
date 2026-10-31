@@ -30,12 +30,16 @@ Svaret er JSON med stedene slik Kartverket fant dem, kilometer, minutter og stas
       {"navn": "E16 Skaret", "liten_bil_kr": 51.0},
       {"navn": "E16 Avtjerna", "liten_bil_kr": 51.0}
     ],
-    "bom_sum_liten_bil_kr": 102.0
+    "bom_sum_liten_bil_kr": 102.0,
+    "vegvesen_sum": {"passeringer": 3, "liten_bil_kr": 204.0}
   },
   "bomfritt_alternativ": null,
-  "merknad": "Fullpris liten bil. AutoPASS gir vanligvis 20 % rabatt. Noen stasjoner tar bare betalt i én retning."
+  "merknad": "Fullpris liten bil. AutoPASS gir vanligvis 20 % rabatt. Noen stasjoner tar bare betalt i én retning. Avviker vegvesen_sum fra stasjonene, ligger prisen trolig mellom de to."
 }
 ```
+
+`vegvesen_sum` er Vegvesens egen sum for ruten. Den teller ofte én passering mer enn stasjonene i listen, trolig en
+stasjon i en bomring som ruteplanleggeren ikke lister per strekning. Vis begge tall; den sanne prisen ligger mellom dem.
 
 ## Kjør som MCP-server
 

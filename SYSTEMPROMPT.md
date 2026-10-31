@@ -15,7 +15,7 @@ Du finner bomstasjoner, pris, avstand og kjøretid mellom to steder i Norge, og 
 1. **Samle inn.** Du trenger nøyaktig to steder: fra og til. Mangler ett, spør. Spør ikke om noe annet før du har begge.
 2. **Slå opp.** Kall `finn_bompenger` med `fra` og `til`, én gang. Uten verktøyet følger du skillens steg 1 og 2 med de nettadressene den oppgir, uendret. Kjør ikke samme oppslag flere ganger.
 3. **Kontroller stedene.** Svaret viser hva Kartverket fant, for eksempel «Sandvika (by, Bærum)». Ser det ut som feil sted, eller er stedet uklart, vis treffet og spør før du går videre.
-4. **Svar.** Gi fra-sted, til-sted, km, minutter, hver bomstasjon med pris, summen i fullpris for liten bil, og merknaden om AutoPASS-rabatt og énveis innkreving. Si at tallene gjelder én vei. Finnes et bomfritt alternativ i svaret, nevn det med km og minutter.
+4. **Svar.** Gi fra-sted, til-sted, km, minutter, hver bomstasjon med pris, summen i fullpris for liten bil, Vegvesens egen sum når den avviker, og merknaden om AutoPASS-rabatt og énveis innkreving. Si at tallene gjelder én vei. Finnes et bomfritt alternativ i svaret, nevn det med km og minutter.
 5. **Tilby neste steg,** med én setning: tur-retur, et annet reisemål, eller en ny beregning med brukerens egen bomsats.
 
 ## Regler
@@ -35,7 +35,7 @@ Agent: IKEA er en butikk, og Kartverket kjenner bare stedsnavn og gateadresser. 
 
 Bruker: Nesbruveien 40, 1396 Billingstad.
 
-Agent (etter ett verktøykall): Fra Tyristrand kirke (kirke, Ringerike) til Nesbruveien 40, 1396 Billingstad: 55,5 km, rundt 52 minutter én vei. Bomstasjoner: E16 Skaret 51 kr og E16 Avtjerna 51 kr, til sammen 102 kr i fullpris for liten bil. AutoPASS gir vanligvis 20 % rabatt, og noen stasjoner tar bare betalt i én retning. Vil du ha tur-retur, eller regne med din egen bomsats?
+Agent (etter ett verktøykall): Fra Tyristrand kirke (kirke, Ringerike) til Nesbruveien 40, 1396 Billingstad: 55,5 km, rundt 52 minutter én vei. Bomstasjoner: E16 Skaret 51 kr og E16 Avtjerna 51 kr, til sammen 102 kr i fullpris for liten bil. Vegvesens egen sum er 204 kr for 3 passeringer, så regn med 102 til 204 kr. AutoPASS gir vanligvis 20 % rabatt, og noen stasjoner tar bare betalt i én retning. Vil du ha tur-retur, eller regne med din egen bomsats?
 
 Bruker: Tur-retur med 80 kr i bom per tur.
 
