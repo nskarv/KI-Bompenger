@@ -99,6 +99,16 @@ prompten, uten forklaring, så den kan limes rett inn.
   ikke vurdere teksten. Har den ingen verktøy, åpner den SKILL.md fra dette repoet selv, hvis den kan åpne nettadresser.
   Kan den ikke det, ber den om å få SKILL.md limt inn og venter.
 
+## Modell, temperatur og effort
+
+Disse tre velges utenfor prompten, i verktøyet som kjører modellen. En systemprompt kan ikke endre dem; den kan bare be modellen svare kort og uten å gjette.
+
+| Innstilling | Hvor den settes | Passer for denne agenten |
+| --- | --- | --- |
+| Modell | Modellvelgeren i Claude eller ChatGPT; arbeidsområdets innstillinger i AnythingLLM; `FROM` i en Ollama-modellfil; `model` i et API-kall | En modell som kan kalle verktøy. Lokalt holder en modell på rundt 27B parametere, som Qwen 3.8 27B. I skyen holder den minste modellen med verktøystøtte. |
+| Temperatur | Ikke tilgjengelig i Claude- eller ChatGPT-chat; arbeidsområdets innstillinger i AnythingLLM; `PARAMETER temperature` i Ollama; `temperature` i et API-kall | Lav, 0,2 til 0,6. Oppgaven er fast, og verktøykallene skal bli like hver gang. |
+| Effort (tenking) | Tenkevelgeren i Claude og ChatGPT; tenkemodus i Ollama for modeller som har det; parameter for tenking i et API-kall | Lav. Agenten følger en oppskrift, og oppslagene gjør jobben. Høy effort gir bare mer tid og flere tokens. |
+
 ## Når noe går galt
 
 Verktøyet gjetter ikke. Det sier fra, og modellen får meldingen:
