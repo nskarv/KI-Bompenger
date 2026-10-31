@@ -48,6 +48,8 @@ Les listen `navn`. Kartverket sorterer ikke etter hva folk mener: «Sandvika» g
 
 Null treff: ikke gjett. Be brukeren om en gateadresse med postnummer, eller et annet stedsnavn.
 
+Svarer adressesøket `{"message":{"utm_source":["Unknown field."]}}` eller en lignende melding om et ukjent felt, har henteverktøyet ditt lagt til en sporingsparameter på adressen (ChatGPT legger til `utm_source=chatgpt.com`). Adressesøket avviser alle ukjente felt; stedsnavnsøket og Vegvesen bryr seg ikke. Gjør da dette, i rekkefølge: hent én gang til med `#` helt sist i adressen, slik at det som legges til havner etter `#` og ikke sendes til tjenesten. Virker ikke det, gi brukeren adressen, be dem åpne den i nettleseren og lime inn JSON-svaret, og les det som vanlig. Ikke gjett koordinater, og ikke bytt til andre tjenester.
+
 Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: øst rundt 200 000 til 300 000 og nord rundt 6 600 000 til 6 700 000 på Østlandet, og nord alltid over 6 400 000 i Norge. Ser du tall som 59,9 og 10,5, er det grader: da manglet `utkoordsys=25833` i adressen. Hent på nytt med parameteren.
 
 ## Steg 2: finn ruten hos Statens vegvesen
