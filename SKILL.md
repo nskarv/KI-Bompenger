@@ -28,7 +28,7 @@ Ikke endre stien på andre måter. Prosentkodede bokstaver i stien, ekstra skrå
 
 ## Steg 1: finn koordinater hos Kartverket
 
-Gjør dette for både fra-stedet og til-stedet.
+Gjør dette for både fra-stedet og til-stedet. Skriv mellomrom og æ, ø, å prosentkodet i `sok`: «Tyristrand kirke» blir `Tyristrand%20kirke`, «Hønefoss» blir `H%C3%B8nefoss`.
 
 **Tekst med tall** (gateadresse med husnummer eller postnummer, for eksempel «Storgata 1, 3510 Hønefoss») søkes som adresse:
 
