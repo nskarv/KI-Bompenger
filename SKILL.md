@@ -15,9 +15,19 @@ Bruk den første som er tilgjengelig:
 2. **Du kan kjøre kommandoer** og har filen `bompenger.py`: kjør `python bompenger.py "<fra>" "<til>"`, og gå til «Svarformat». Filen ligger på https://github.com/nskarv/KI-Bompenger.
 3. **Du kan hente nettsider (web fetch):** følg stegene under. Begge tjenestene er åpne og trenger ingen nøkkel.
 
+## Hvert oppslag trenger sin egen nettadresse
+
+Henteverktøyet i en samtale kan gjenbruke en side det alt har hentet, selv om spørringen etter «?» er ny. Da får du forrige svar igjen: søker du «Sandvika» og får «Tyristrand kirke», er det dette som har skjedd. Tjenesten feiler ikke. Bruk derfor en ny variant av adressen for hvert oppslag i samtalen. Alle variantene gir samme svar fra tjenesten:
+
+- Kartverket stedsnavn: `https://ws.geonorge.no/stedsnavn/v1/navn`, så `https://api.kartverket.no/stedsnavn/v1/navn`, så `https://ws.geonorge.no/stedsnavn/v1/n%61vn`, så `https://api.kartverket.no/stedsnavn/v1/n%61vn`. Trenger du flere, bytt ut en annen bokstav i stien med prosentkoden: `na%76n`, `%6Eavn`, `nav%6E`.
+- Kartverket adresser: samme to verter, og `s%6Fk`, `%73ok`, `so%6B` i stedet for `sok` i stien.
+- Statens vegvesen: bytt mellom `Route/best`, `route/best`, `Route/Best`, `ROUTE/best`, `route/BEST`, eller legg til en skråstrek: `Route/best/`.
+
+Regel: viser svaret samme sted eller samme rute som et tidligere oppslag i samtalen, selv om du søkte på noe annet, gjenta oppslaget med neste variant. Si ikke at tjenesten feiler før en ny variant også har gitt feil svar.
+
 ## Steg 1: finn koordinater hos Kartverket
 
-Gjør dette for både fra-stedet og til-stedet.
+Gjør dette for både fra-stedet og til-stedet, med hver sin variant av adressen (se over): fra-stedet på ws.geonorge.no, til-stedet på api.kartverket.no.
 
 **Tekst med tall** (gateadresse med husnummer eller postnummer, for eksempel «Storgata 1, 3510 Hønefoss») søkes som adresse:
 
