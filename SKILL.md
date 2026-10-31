@@ -48,7 +48,12 @@ Les listen `navn`. Kartverket sorterer ikke etter hva folk mener: «Sandvika» g
 
 Null treff: ikke gjett. Be brukeren om en gateadresse med postnummer, eller et annet stedsnavn.
 
-Svarer adressesøket `{"message":{"utm_source":["Unknown field."]}}` eller en lignende melding om et ukjent felt, har henteverktøyet ditt lagt til en sporingsparameter på adressen (ChatGPT legger til `utm_source=chatgpt.com`). Adressesøket avviser alle ukjente felt; stedsnavnsøket og Vegvesen bryr seg ikke. Gjør da dette, i rekkefølge: hent én gang til med `#` helt sist i adressen, slik at det som legges til havner etter `#` og ikke sendes til tjenesten. Virker ikke det, gi brukeren adressen, be dem åpne den i nettleseren og lime inn JSON-svaret, og les det som vanlig. Ikke gjett koordinater, og ikke bytt til andre tjenester.
+Svarer adressesøket `{"message":{"utm_source":["Unknown field."]}}` eller en lignende melding om et ukjent felt, har henteverktøyet ditt lagt til en sporingsparameter på adressen (ChatGPT legger til `utm_source=chatgpt.com`). Adressesøket avviser alle ukjente felt. Stedsnavnsøket og Vegvesen godtar dem, så bruk stedsnavnsøket til å finne gaten i stedet, i to oppslag:
+
+1. Finn kommunen fra poststedet: `https://ws.geonorge.no/stedsnavn/v1/navn?sok=<poststed>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Billingstad`. Les `kommuner[0].kommunenavn` i det første treffet som er en by, et tettsted eller en tettbebyggelse (Billingstad gir Asker).
+2. Finn gaten i den kommunen: `https://ws.geonorge.no/stedsnavn/v1/navn?sok=<gatenavn>&kommunenavn=<kommune>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Nesbruveien&kommunenavn=Asker`. Treffet har `navneobjekttype` «Adressenavn» og et `representasjonspunkt` midt på gaten. Bruk det, uten husnummer.
+
+Si i svaret at adressesøket ikke var tilgjengelig, og at du brukte gaten uten husnummer, som kan avvike med opptil et par kilometer fra selve adressen. Tilby brukeren å åpne adressesøket selv i nettleseren og lime inn JSON-svaret hvis nøyaktig adresse er viktig. Ikke gjett koordinater, og ikke bytt til andre tjenester.
 
 Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: øst rundt 200 000 til 300 000 og nord rundt 6 600 000 til 6 700 000 på Østlandet, og nord alltid over 6 400 000 i Norge. Ser du tall som 59,9 og 10,5, er det grader: da manglet `utkoordsys=25833` i adressen. Hent på nytt med parameteren.
 
