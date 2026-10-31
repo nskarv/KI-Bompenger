@@ -76,9 +76,10 @@ Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ med km og
 Får du en feil fra Vegvesen, les meldingen i svaret. Den er JSON med `code` og `message`:
 
 - `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst, nord (ikke nord, øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med `%3B` mellom. Rett opp og hent på nytt med en ny variant av adressen. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
-- Andre feil eller ikke noe svar: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
+- Henteverktøyet ditt melder «klientfeil» eller lignende uten noen JSON-melding, selv om adressen er riktig bygget: da er det verktøyet som ikke får hentet siden, ikke Vegvesen som avviser ruten. Enkelte henteverktøy spør tjenesten med HEAD før GET, og Vegvesens ruteplanlegger svarer 405 på HEAD. Ikke prøv flere ganger, og ikke bruk andre tjenester. Gi brukeren hele adressen du bygde, be dem åpne den i nettleseren sin og lime inn svaret, og les det innlimte svaret som i steg 2. Nettleseren viser JSON-en direkte.
+- Ikke noe svar i det hele tatt: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
 
-Når et oppslag feiler, si til brukeren hvilken nettadresse du åpnet (uten vertsnavnet holder) og hva svaret var. Da kan feilen rettes.
+Når et oppslag feiler, si alltid til brukeren hvilken nettadresse du åpnet og hva svaret var. Da kan feilen rettes.
 
 ## Svarformat
 
