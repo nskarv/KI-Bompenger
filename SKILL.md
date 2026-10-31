@@ -15,19 +15,20 @@ Bruk den første som er tilgjengelig:
 2. **Du kan kjøre kommandoer** og har filen `bompenger.py`: kjør `python bompenger.py "<fra>" "<til>"`, og gå til «Svarformat». Filen ligger på https://github.com/nskarv/KI-Bompenger.
 3. **Du kan hente nettsider (web fetch):** følg stegene under. Begge tjenestene er åpne og trenger ingen nøkkel.
 
-## Hvert oppslag trenger sin egen nettadresse
+## Bruk de vanlige adressene først
 
-Henteverktøyet i en samtale kan gjenbruke en side det alt har hentet, selv om spørringen etter «?» er ny. Da får du forrige svar igjen: søker du «Sandvika» og får «Tyristrand kirke», er det dette som har skjedd. Tjenesten feiler ikke. Bruk derfor en ny variant av adressen for hvert oppslag i samtalen. Alle variantene gir samme svar fra tjenesten:
+Bruk alltid adressene slik de står i steg 1 og 2, uten endringer. De virker i de fleste verktøy.
 
-- Kartverket stedsnavn: `https://ws.geonorge.no/stedsnavn/v1/navn`, så `https://api.kartverket.no/stedsnavn/v1/navn`, så `https://ws.geonorge.no/stedsnavn/v1/n%61vn`, så `https://api.kartverket.no/stedsnavn/v1/n%61vn`. Trenger du flere, bytt ut en annen bokstav i stien med prosentkoden: `na%76n`, `%6Eavn`, `nav%6E`.
-- Kartverket adresser: samme to verter, og `s%6Fk`, `%73ok`, `so%6B` i stedet for `sok` i stien.
-- Statens vegvesen: bytt mellom `Route/best`, `route/best`, `Route/Best`, `ROUTE/best`, `route/BEST`, eller legg til en skråstrek: `Route/best/`.
+Ett unntak: enkelte henteverktøy gjenbruker en side de alt har hentet, selv om spørringen etter «?» er ny. Da får du forrige svar igjen: søker du «Sandvika» og får «Tyristrand kirke», er det dette som har skjedd. Tjenesten feiler ikke. Bare da bytter du vertsnavn for neste oppslag, og ellers ingenting:
 
-Regel: viser svaret samme sted eller samme rute som et tidligere oppslag i samtalen, selv om du søkte på noe annet, gjenta oppslaget med neste variant. Si ikke at tjenesten feiler før en ny variant også har gitt feil svar.
+- Kartverket: `ws.geonorge.no` og `api.kartverket.no` svarer likt. Trenger du en tredje variant, skriv vertsnavnet med store bokstaver, for eksempel `WS.GEONORGE.NO`.
+- Statens vegvesen: `Route/best` og `route/best` svarer likt.
+
+Ikke endre stien på andre måter. Prosentkodede bokstaver i stien, ekstra skråstreker eller andre påfunn blir avvist av enkelte verktøy.
 
 ## Steg 1: finn koordinater hos Kartverket
 
-Gjør dette for både fra-stedet og til-stedet, med hver sin variant av adressen (se over): fra-stedet på ws.geonorge.no, til-stedet på api.kartverket.no.
+Gjør dette for både fra-stedet og til-stedet.
 
 **Tekst med tall** (gateadresse med husnummer eller postnummer, for eksempel «Storgata 1, 3510 Hønefoss») søkes som adresse:
 
@@ -47,21 +48,21 @@ Les listen `navn`. Kartverket sorterer ikke etter hva folk mener: «Sandvika» g
 
 Null treff: ikke gjett. Be brukeren om en gateadresse med postnummer, eller et annet stedsnavn.
 
-Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: øst rundt 200 000 til 300 000 og nord rundt 6 600 000 til 6 700 000 på Østlandet, og nord alltid over 6 400 000 i Norge. Ser du tall som 59,9 og 10,5, er det grader: da manglet `utkoordsys=25833` i adressen. Hent på nytt med parameteren, med en ny variant av adressen.
+Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: øst rundt 200 000 til 300 000 og nord rundt 6 600 000 til 6 700 000 på Østlandet, og nord alltid over 6 400 000 i Norge. Ser du tall som 59,9 og 10,5, er det grader: da manglet `utkoordsys=25833` i adressen. Hent på nytt med parameteren.
 
 ## Steg 2: finn ruten hos Statens vegvesen
 
 ```
-https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>%2C<nord1>%3B<øst2>%2C<nord2>&Format=json
+https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>,<nord1>;<øst2>,<nord2>&Format=json
 ```
 
-Rekkefølgen er øst, nord for fra-stedet, så øst, nord for til-stedet. Skriv skilletegnene prosentkodet: `%2C` for komma og `%3B` for semikolon. Vegvesen godtar begge former, men enkelte henteverktøy avviser en adresse med et rått semikolon, og da feiler oppslaget før det når Vegvesen. Eksempel for Tyristrand kirke til Sandvika:
+Rekkefølgen er øst,nord for fra-stedet, semikolon, øst,nord for til-stedet. Eksempel for Tyristrand kirke til Sandvika:
 
 ```
-...Route/best?Stops=227433.45%2C6671118.76%3B249716.17%2C6647823.44&Format=json
+...Route/best?Stops=227433.45,6671118.76;249716.17,6647823.44&Format=json
 ```
 
-Bare komma (eller `%2C`) mellom øst og nord, og bare semikolon (eller `%3B`) mellom de to punktene, gir en gyldig adresse. Mellomrom, `|` eller to `Stops`-parametere gir feil 400.
+Bare komma mellom øst og nord, og bare semikolon mellom de to punktene, gir en gyldig adresse. Mellomrom, `|` eller to `Stops`-parametere gir feil 400. Avviser henteverktøyet ditt adressen på grunn av semikolonet, skriv `%3B` i stedet for `;` og `%2C` i stedet for `,`. Vegvesen godtar begge former.
 
 Svaret er stort. Du trenger bare dette fra `routes[0]`:
 
@@ -75,7 +76,7 @@ Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ med km og
 
 Får du en feil fra Vegvesen, les meldingen i svaret. Den er JSON med `code` og `message`:
 
-- `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst, nord (ikke nord, øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med `%3B` mellom. Rett opp og hent på nytt med en ny variant av adressen. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
+- `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst,nord (ikke nord,øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med semikolon mellom. Rett opp og hent på nytt. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
 - Henteverktøyet ditt melder «klientfeil» eller lignende uten noen JSON-melding, selv om adressen er riktig bygget: da er det verktøyet som ikke får hentet siden, ikke Vegvesen som avviser ruten. Enkelte henteverktøy spør tjenesten med HEAD før GET, og Vegvesens ruteplanlegger svarer 405 på HEAD. Ikke prøv flere ganger, og ikke bruk andre tjenester. Gi brukeren hele adressen du bygde, be dem åpne den i nettleseren sin og lime inn svaret, og les det innlimte svaret som i steg 2. Nettleseren viser JSON-en direkte.
 - Ikke noe svar i det hele tatt: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
 
