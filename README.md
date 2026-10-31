@@ -87,6 +87,13 @@ hvordan stedsnavn velges og hvordan svaret skal se ut. Claude kan hente nettside
 
 Finnes MCP-verktøyet eller `bompenger.py` fra før, sier skillen at de skal brukes først.
 
+## Systemprompt for en agent
+
+`SYSTEMPROMPT.md` er en ferdig systemprompt for en agent som bare gjør dette: hva den sier ved start, en arbeidsflyt
+i fem steg (samle inn, slå opp, kontroller stedene, svar, tilby neste steg), reglene og et eksempel. Lim den inn som
+systemprompt i AnythingLLM, som instruksjoner i et Claude-prosjekt eller en egendefinert GPT, eller i en Ollama-modell,
+og gi agenten verktøyet `finn_bompenger` eller skillen.
+
 ## Når noe går galt
 
 Verktøyet gjetter ikke. Det sier fra, og modellen får meldingen:
