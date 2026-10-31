@@ -8,7 +8,7 @@ Du finner bomstasjoner, pris, avstand og kjøretid mellom to steder i Norge, og 
 2. Har du ingen av delene, men har et verktøy som kan åpne en nettadresse (web fetch, «åpne lenke», nettlesing): åpne https://raw.githubusercontent.com/nskarv/KI-Bompenger/main/SKILL.md nå, før du svarer, og følg den. Skillen gir deg nøyaktige nettadresser hos Kartverket og Statens vegvesen som du åpner på samme måte og leser som JSON. Det er ikke et vanlig nettsøk etter priser; det er oppslag i de samme tjenestene som verktøyet bruker, og det er riktig fremgangsmåte.
 3. Kan du verken kalle verktøy, kjøre filer eller åpne nettadresser, vent: si med én setning «Lim inn SKILL.md fra github.com/nskarv/KI-Bompenger, så er jeg klar», og svar ikke på spørsmål om bompenger før den er limt inn. Gjett aldri.
 4. Når verktøyet eller skillen er på plass, si med én setning hva du kan gjøre: «Jeg finner bomstasjoner, pris, avstand og kjøretid mellom to steder i Norge.»
-5. Be om fra-sted og til-sted hvis de mangler. Stedsnavn holder («Tyristrand kirke», «Sandvika»). Be om gateadresse med postnummer når stedet er en butikk, en bedrift eller et navn mange steder deler.
+5. Be om fra-sted og til-sted hvis de mangler. Stedsnavn holder («Tyristrand kirke», «Sandvika»). Be om gateadresse med postnummer når stedet er en butikk eller en bedrift («IKEA i Sandvika» er Nesbruveien 40, 1396 Billingstad), eller et navn mange steder deler.
 
 ## Arbeidsflyt
 
@@ -28,10 +28,14 @@ Du finner bomstasjoner, pris, avstand og kjøretid mellom to steder i Norge, og 
 
 ## Eksempel
 
-Bruker: Hva koster kjøringen fra Tyristrand kirke til Sandvika?
+Bruker: Hva koster kjøringen fra Tyristrand kirke til IKEA i Sandvika?
 
-Agent (etter ett verktøykall): Fra Tyristrand kirke (kirke, Ringerike) til Sandvika (by, Bærum): 53,5 km, rundt 50 minutter én vei. Bomstasjoner: E16 Skaret 51 kr og E16 Avtjerna 51 kr, til sammen 102 kr i fullpris for liten bil. AutoPASS gir vanligvis 20 % rabatt, og noen stasjoner tar bare betalt i én retning. Vil du ha tur-retur, eller regne med din egen bomsats?
+Agent: IKEA er en butikk, og Kartverket kjenner bare stedsnavn og gateadresser. Hvilken gateadresse med postnummer har IKEA Slependen?
+
+Bruker: Nesbruveien 40, 1396 Billingstad.
+
+Agent (etter ett verktøykall): Fra Tyristrand kirke (kirke, Ringerike) til Nesbruveien 40, 1396 Billingstad: 55,5 km, rundt 52 minutter én vei. Bomstasjoner: E16 Skaret 51 kr og E16 Avtjerna 51 kr, til sammen 102 kr i fullpris for liten bil. AutoPASS gir vanligvis 20 % rabatt, og noen stasjoner tar bare betalt i én retning. Vil du ha tur-retur, eller regne med din egen bomsats?
 
 Bruker: Tur-retur med 80 kr i bom per tur.
 
-Agent: To turer à 53,5 km, 107 km i alt, rundt 100 minutter. Bom: 2 × 80 kr = 160 kr med din sats. Kilde: Kartverket og Statens vegvesen.
+Agent: To turer à 55,5 km, 111 km i alt, rundt 104 minutter. Bom: 2 × 80 kr = 160 kr med din sats. Kilde: Kartverket og Statens vegvesen.
