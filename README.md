@@ -74,6 +74,19 @@ Spør så: «Hva koster bompengene fra Tyristrand kirke til Sandvika?»
 MCP-delen er rundt 40 linjer og dekker de fire metodene en klient bruker: `initialize`, `ping`, `tools/list` og `tools/call`.
 Testet 31. oktober 2026 med den offisielle MCP-klienten (Python SDK 2.3.0).
 
+## Bruk som skill i Claude, uten kode
+
+`SKILL.md` er oppskriften for Claude. Den beskriver hvilke adresser som skal hentes, hvilke felt som skal leses,
+hvordan stedsnavn velges og hvordan svaret skal se ut. Claude kan hente nettsider selv, så den trenger ikke programmet.
+
+- **I en samtale:** dra `SKILL.md` inn i chatvinduet og spør: «Hva koster bompengene fra Tyristrand kirke til Sandvika?»
+  Websøk må være slått på.
+- **Som fast skill i Claude:** pakk mappen `bompenger/` med `SKILL.md` i en zip-fil og last den opp under
+  Settings → Capabilities → Skills.
+- **I Claude Code:** legg `SKILL.md` i `.claude/skills/bompenger/` i prosjektet, eller i `~/.claude/skills/bompenger/`.
+
+Finnes MCP-verktøyet eller `bompenger.py` fra før, sier skillen at de skal brukes først.
+
 ## Når noe går galt
 
 Verktøyet gjetter ikke. Det sier fra, og modellen får meldingen:
