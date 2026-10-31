@@ -52,14 +52,16 @@ Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: 
 ## Steg 2: finn ruten hos Statens vegvesen
 
 ```
-https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>,<nord1>;<øst2>,<nord2>&Format=json
+https://www.vegvesen.no/ws/no/vegvesen/ruteplan/routingservice_v3_0/open/routingservice/api/Route/best?Stops=<øst1>%2C<nord1>%3B<øst2>%2C<nord2>&Format=json
 ```
 
-Rekkefølgen er øst,nord for fra-stedet, semikolon, øst,nord for til-stedet. Eksempel for Tyristrand kirke til Sandvika:
+Rekkefølgen er øst, nord for fra-stedet, så øst, nord for til-stedet. Skriv skilletegnene prosentkodet: `%2C` for komma og `%3B` for semikolon. Vegvesen godtar begge former, men enkelte henteverktøy avviser en adresse med et rått semikolon, og da feiler oppslaget før det når Vegvesen. Eksempel for Tyristrand kirke til Sandvika:
 
 ```
-...Route/best?Stops=227433.45,6671118.76;249716.17,6647823.44&Format=json
+...Route/best?Stops=227433.45%2C6671118.76%3B249716.17%2C6647823.44&Format=json
 ```
+
+Bare komma (eller `%2C`) mellom øst og nord, og bare semikolon (eller `%3B`) mellom de to punktene, gir en gyldig adresse. Mellomrom, `|` eller to `Stops`-parametere gir feil 400.
 
 Svaret er stort. Du trenger bare dette fra `routes[0]`:
 
@@ -73,7 +75,7 @@ Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ med km og
 
 Får du en feil fra Vegvesen, les meldingen i svaret. Den er JSON med `code` og `message`:
 
-- `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst,nord (ikke nord,øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med semikolon mellom. Rett opp og hent på nytt med en ny variant av adressen. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
+- `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst, nord (ikke nord, øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med `%3B` mellom. Rett opp og hent på nytt med en ny variant av adressen. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
 - Andre feil eller ikke noe svar: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
 
 Når et oppslag feiler, si til brukeren hvilken nettadresse du åpnet (uten vertsnavnet holder) og hva svaret var. Da kan feilen rettes.
