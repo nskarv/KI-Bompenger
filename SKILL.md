@@ -47,6 +47,8 @@ Les listen `navn`. Kartverket sorterer ikke etter hva folk mener: «Sandvika» g
 
 Null treff: ikke gjett. Be brukeren om en gateadresse med postnummer, eller et annet stedsnavn.
 
+Kontroller koordinatene før du går videre. I UTM 33 er de store tall i meter: øst rundt 200 000 til 300 000 og nord rundt 6 600 000 til 6 700 000 på Østlandet, og nord alltid over 6 400 000 i Norge. Ser du tall som 59,9 og 10,5, er det grader: da manglet `utkoordsys=25833` i adressen. Hent på nytt med parameteren, med en ny variant av adressen.
+
 ## Steg 2: finn ruten hos Statens vegvesen
 
 ```
@@ -69,7 +71,12 @@ Ikke bruk `statistic.tollCount` eller `statistic.tollSmall`. De stemmer ikke med
 
 Finnes `routes[1]` uten bomstasjoner, nevn den som bomfritt alternativ med km og minutter.
 
-Svarer Vegvesen med feil 404, finnes det ingen kjørerute mellom stedene (for eksempel til Svalbard). Si det. Svarer tjenesten ikke, si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
+Får du en feil fra Vegvesen, les meldingen i svaret. Den er JSON med `code` og `message`:
+
+- `code` 9200 til 9209, «posisjonen er for langt unna gyldig vegnett»: et punkt ligger utenfor vegnettet. Det betyr nesten alltid at `Stops` er feil bygget, ikke at ruten mangler. Sjekk at rekkefølgen er øst,nord (ikke nord,øst), at tallene er UTM-meter og ikke grader, og at begge punktene står der med semikolon mellom. Rett opp og hent på nytt med en ny variant av adressen. Først når punktene er riktige og meldingen likevel kommer, finnes det ingen kjørerute (for eksempel til Svalbard). Si det da.
+- Andre feil eller ikke noe svar: si at Vegvesens ruteplanlegger ikke svarte nå, og foreslå å prøve igjen.
+
+Når et oppslag feiler, si til brukeren hvilken nettadresse du åpnet (uten vertsnavnet holder) og hva svaret var. Da kan feilen rettes.
 
 ## Svarformat
 
