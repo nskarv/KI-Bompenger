@@ -21,7 +21,7 @@ Bruk alltid adressene slik de står i steg 1 og 2, uten endringer. De virker i d
 
 Ett unntak: enkelte henteverktøy gjenbruker en side de alt har hentet, selv om spørringen etter «?» er ny. Da får du forrige svar igjen: søker du «Sandvika» og får «Tyristrand kirke», er det dette som har skjedd. Tjenesten feiler ikke. Bare da bytter du vertsnavn for neste oppslag, og ellers ingenting:
 
-- Kartverket: `ws.geonorge.no` og `api.kartverket.no` svarer likt. Trenger du en tredje variant, skriv vertsnavnet med store bokstaver, for eksempel `WS.GEONORGE.NO`.
+- Kartverket: `api.kartverket.no` og `ws.geonorge.no` svarer likt. Trenger du en tredje variant, skriv vertsnavnet med store bokstaver, for eksempel `API.KARTVERKET.NO`.
 - Statens vegvesen: `Route/best` og `route/best` svarer likt.
 
 Ikke endre stien på andre måter. Prosentkodede bokstaver i stien, ekstra skråstreker eller andre påfunn blir avvist av enkelte verktøy.
@@ -33,7 +33,7 @@ Gjør dette for både fra-stedet og til-stedet. Skriv mellomrom og æ, ø, å pr
 **Tekst med tall** (gateadresse med husnummer eller postnummer, for eksempel «Storgata 1, 3510 Hønefoss») søkes som adresse:
 
 ```
-https://ws.geonorge.no/adresser/v1/sok?sok=<tekst>&utkoordsys=25833&treffPerSide=1
+https://api.kartverket.no/adresser/v1/sok?sok=<tekst>&utkoordsys=25833&treffPerSide=1
 ```
 
 Les `adresser[0]`. Koordinatene står i `representasjonspunkt`: **øst i feltet `lon`, nord i feltet `lat`** (ja, navnene er byttet om når utkoordsys er 25833). Stedet skrives som `adressetekst, postnummer poststed`.
@@ -41,7 +41,7 @@ Les `adresser[0]`. Koordinatene står i `representasjonspunkt`: **øst i feltet 
 **Tekst uten tall** (stedsnavn, for eksempel «Tyristrand kirke» eller «Sandvika») søkes som stedsnavn:
 
 ```
-https://ws.geonorge.no/stedsnavn/v1/navn?sok=<tekst>&utkoordsys=25833&treffPerSide=10&filtrer=navn.skrivem%C3%A5te,navn.navneobjekttype,navn.kommuner.kommunenavn,navn.representasjonspunkt
+https://api.kartverket.no/stedsnavn/v1/navn?sok=<tekst>&utkoordsys=25833&treffPerSide=10&filtrer=navn.skrivem%C3%A5te,navn.navneobjekttype,navn.kommuner.kommunenavn,navn.representasjonspunkt
 ```
 
 `filtrer` gjør svaret lite: bare navn, type, kommune og koordinater. Uten den er svaret dobbelt så stort.
@@ -52,8 +52,8 @@ Null treff: ikke gjett. Be brukeren om en gateadresse med postnummer, eller et a
 
 Svarer adressesøket `{"message":{"utm_source":["Unknown field."]}}` eller en lignende melding om et ukjent felt, har henteverktøyet ditt lagt til en sporingsparameter på adressen (ChatGPT legger til `utm_source=chatgpt.com`). Adressesøket avviser alle ukjente felt. Stedsnavnsøket og Vegvesen godtar dem, så bruk stedsnavnsøket til å finne gaten i stedet, i to oppslag:
 
-1. Finn kommunen fra poststedet: `https://ws.geonorge.no/stedsnavn/v1/navn?sok=<poststed>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Billingstad`. Les `kommuner[0].kommunenavn` i det første treffet som er en by, et tettsted eller en tettbebyggelse (Billingstad gir Asker).
-2. Finn gaten i den kommunen: `https://ws.geonorge.no/stedsnavn/v1/navn?sok=<gatenavn>&kommunenavn=<kommune>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Nesbruveien&kommunenavn=Asker`. Treffet har `navneobjekttype` «Adressenavn» og et `representasjonspunkt` midt på gaten. Bruk det, uten husnummer.
+1. Finn kommunen fra poststedet: `https://api.kartverket.no/stedsnavn/v1/navn?sok=<poststed>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Billingstad`. Les `kommuner[0].kommunenavn` i det første treffet som er en by, et tettsted eller en tettbebyggelse (Billingstad gir Asker).
+2. Finn gaten i den kommunen: `https://api.kartverket.no/stedsnavn/v1/navn?sok=<gatenavn>&kommunenavn=<kommune>&utkoordsys=25833&treffPerSide=5`, for eksempel `sok=Nesbruveien&kommunenavn=Asker`. Treffet har `navneobjekttype` «Adressenavn» og et `representasjonspunkt` midt på gaten. Bruk det, uten husnummer.
 
 Si i svaret at adressesøket ikke var tilgjengelig, og at du brukte gaten uten husnummer, som kan avvike med opptil et par kilometer fra selve adressen. Tilby brukeren å åpne adressesøket selv i nettleseren og lime inn JSON-svaret hvis nøyaktig adresse er viktig. Ikke gjett koordinater, og ikke bytt til andre tjenester.
 
